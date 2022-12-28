@@ -18,27 +18,22 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-
         homePage()
 
         binding.navBar.setOnItemSelectedListener {
-
             if(it.itemId==R.id.home_menu){
                 homePage()
             }
             else{
                 laporPage()
             }
-
             return@setOnItemSelectedListener true
         }
-
-
-
 
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.profile_logout_menu,menu)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -47,8 +42,9 @@ class HomeActivity : AppCompatActivity() {
             finish()
         }
         else{
-            var profileIntent=Intent()
+            var profileIntent=Intent(this,ProfileActivity::class.java)
             startActivity(profileIntent)
+            homePage()
         }
         return true
     }

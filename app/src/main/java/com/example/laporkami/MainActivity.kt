@@ -37,6 +37,8 @@ class MainActivity : AppCompatActivity() {
         btnLogin.setOnClickListener {
             if(etEmail.text.toString()!="" && etPassword.text.toString()!=""){
                 MainLauncher.launch(intentHome)
+                etEmail.setText("")
+                etPassword.setText("")
             }
 
         }

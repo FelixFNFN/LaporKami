@@ -11,7 +11,7 @@
         android:id="@+id/textView2"
         android:layout_width="179dp"
         android:layout_height="47dp"
-        android:layout_marginTop="156dp"
+        android:layout_marginTop="160dp"
         android:text="REGISTER"
         android:textAlignment="center"
         android:textColor="#000000"
@@ -56,6 +56,7 @@
         android:ems="10"
         android:hint="Password"
         android:inputType="textPersonName"
+        android:password="true"
         app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName3"
         tools:layout_editor_absoluteX="100dp" />
 
