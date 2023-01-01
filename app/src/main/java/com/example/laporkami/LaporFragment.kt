@@ -1,10 +1,22 @@
 package com.example.laporkami
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.ListView
+import android.widget.TextView
+import android.widget.Toast
+import com.android.volley.RequestQueue
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
+import org.json.JSONArray
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -20,7 +32,12 @@ class LaporFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-
+    lateinit var etSearch: EditText
+    lateinit var searchingBtn: ImageButton
+    lateinit var tvGoCreateLaporan: TextView
+    lateinit var pertanyaanAdapter: PertanyaanAdapter
+    lateinit var arrPertanyaan:ArrayList<Pertanyaan>
+    val WS_HOST = "http://10.0.2.2:8000/api"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -37,23 +54,43 @@ class LaporFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_lapor, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment LaporFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            LaporFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        etSearch=view.findViewById(R.id.etSearch)
+        searchingBtn=view.findViewById(R.id.searchImgBtn)
+        tvGoCreateLaporan=view.findViewById(R.id.tvGoCreateLaporan)
+
+        searchingBtn.setOnClickListener {
+
+        }
+
+        tvGoCreateLaporan.setOnClickListener {
+            var laporIntent=Intent(view.context,LaporActivity::class.java)
+            startActivity(laporIntent)
+        }
+    }
+
+    fun refreshList(){
+        val strReq=object : StringRequest(
+            Method.GET,
+            "$WS_HOST/laporan",
+            Response.Listener {
+                val obj: JSONArray = JSONArray(it)
+                arrPertanyaan.clear()
+                for (i in 0 until obj.length()){
+                    val o=obj.getJSONObject(i)
+                    val id=o.getString("id").toLong()
+                    val pertanyaan=o.getString("pertanyaan")
+                    val m=Pertanyaan(id,pertanyaan)
+                    arrPertanyaan.add(m)
                 }
+                pertanyaanAdapter.notifyDataSetChanged()
+            },
+            Response.ErrorListener {
+                Toast.makeText(context,"error", Toast.LENGTH_SHORT).show()
             }
+        ){}
+        val queue: RequestQueue = Volley.newRequestQueue(context)
+        queue.add(strReq)
     }
 }

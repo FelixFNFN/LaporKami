@@ -32,8 +32,8 @@ class HomeFragment : Fragment() {
     lateinit var etNIK:EditText
     lateinit var btnCari:Button
     lateinit var lvNotif:ListView
-    lateinit var pertanyaanAdapter: PertanyaanAdapter
-    lateinit var arrPertanyaan:ArrayList<Pertanyaan>
+    lateinit var aktifitasAdapter: AktifitasAdapter
+    lateinit var arrAktivitas:ArrayList<Aktifitas>
     val WS_HOST = "http://10.0.2.2:8000/api"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,26 +56,29 @@ class HomeFragment : Fragment() {
         btnCari=view.findViewById(R.id.btnCari)
         etNIK=view.findViewById(R.id.etNIK)
         lvNotif=view.findViewById(R.id.listNotif)
-        pertanyaanAdapter= PertanyaanAdapter(view.context,arrPertanyaan)
-        refreshList()
-        lvNotif.adapter=pertanyaanAdapter
+        //refreshList()
+//        aktifitasAdapter= AktifitasAdapter(view.context,arrAktivitas)
+//        lvNotif.adapter=aktifitasAdapter
     }
 
     fun refreshList(){
         val strReq=object : StringRequest(
             Method.GET,
-            "$WS_HOST/user",
+            "$WS_HOST/aktivitas",
             Response.Listener {
                 val obj: JSONArray = JSONArray(it)
-                arrPertanyaan.clear()
+                arrAktivitas.clear()
                 for (i in 0 until obj.length()){
                     val o=obj.getJSONObject(i)
                     val id=o.getString("id").toLong()
-                    val pertanyaan=o.getString("pertanyaan")
-                    val m=Pertanyaan(id,pertanyaan)
-                    arrPertanyaan.add(m)
+                    val nik=o.getString("nik")
+                    val nama=o.getString("nama")
+                    val aktivitas=o.getString("aktivitas")
+                    val status=o.getString("statusCode").toInt()
+                    val m=Aktifitas(id,nik,nama,aktivitas,status)
+                    arrAktivitas.add(m)
                 }
-                pertanyaanAdapter.notifyDataSetChanged()
+                aktifitasAdapter.notifyDataSetChanged()
             },
             Response.ErrorListener {
                 Toast.makeText(context,"error", Toast.LENGTH_SHORT).show()
