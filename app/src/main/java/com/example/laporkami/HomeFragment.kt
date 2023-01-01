@@ -8,6 +8,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
+import android.widget.Toast
+import com.android.volley.RequestQueue
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
+import org.json.JSONArray
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +32,9 @@ class HomeFragment : Fragment() {
     lateinit var etNIK:EditText
     lateinit var btnCari:Button
     lateinit var lvNotif:ListView
-
+    lateinit var pertanyaanAdapter: PertanyaanAdapter
+    lateinit var arrPertanyaan:ArrayList<Pertanyaan>
+    val WS_HOST = "http://10.0.2.2:8000/api"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -48,6 +56,33 @@ class HomeFragment : Fragment() {
         btnCari=view.findViewById(R.id.btnCari)
         etNIK=view.findViewById(R.id.etNIK)
         lvNotif=view.findViewById(R.id.listNotif)
+        pertanyaanAdapter= PertanyaanAdapter(view.context,arrPertanyaan)
+        refreshList()
+        lvNotif.adapter=pertanyaanAdapter
+    }
+
+    fun refreshList(){
+        val strReq=object : StringRequest(
+            Method.GET,
+            "$WS_HOST/user",
+            Response.Listener {
+                val obj: JSONArray = JSONArray(it)
+                arrPertanyaan.clear()
+                for (i in 0 until obj.length()){
+                    val o=obj.getJSONObject(i)
+                    val id=o.getString("id").toLong()
+                    val pertanyaan=o.getString("pertanyaan")
+                    val m=Pertanyaan(id,pertanyaan)
+                    arrPertanyaan.add(m)
+                }
+                pertanyaanAdapter.notifyDataSetChanged()
+            },
+            Response.ErrorListener {
+                Toast.makeText(context,"error", Toast.LENGTH_SHORT).show()
+            }
+        ){}
+        val queue: RequestQueue = Volley.newRequestQueue(context)
+        queue.add(strReq)
 
     }
 }

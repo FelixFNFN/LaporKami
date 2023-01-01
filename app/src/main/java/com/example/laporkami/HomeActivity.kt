@@ -13,6 +13,9 @@ import kotlinx.coroutines.launch
 class HomeActivity : AppCompatActivity() {
     private val coroutine = CoroutineScope(Dispatchers.IO)
     lateinit var binding: ActivityHomeBinding
+    lateinit var arrPertanyaan: ArrayList<Pertanyaan>
+    lateinit var pertanyaanAdapter: PertanyaanAdapter
+    val WS_HOST = "http://10.0.2.2:8000/api"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
