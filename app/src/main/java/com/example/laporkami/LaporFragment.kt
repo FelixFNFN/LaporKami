@@ -35,8 +35,10 @@ class LaporFragment : Fragment() {
     lateinit var etSearch: EditText
     lateinit var searchingBtn: ImageButton
     lateinit var tvGoCreateLaporan: TextView
+    lateinit var lvPertanyaan: ListView
     lateinit var pertanyaanAdapter: PertanyaanAdapter
     lateinit var arrPertanyaan:ArrayList<Pertanyaan>
+    lateinit var arrPertanyaanDB:ArrayList<Pertanyaan>
     val WS_HOST = "http://10.0.2.2:8000/api"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,14 +61,31 @@ class LaporFragment : Fragment() {
         etSearch=view.findViewById(R.id.etSearch)
         searchingBtn=view.findViewById(R.id.searchImgBtn)
         tvGoCreateLaporan=view.findViewById(R.id.tvGoCreateLaporan)
-
+        lvPertanyaan=view.findViewById(R.id.lvPertanyaan)
+        arrPertanyaan= ArrayList()
+        for (i in 0 .. 10){
+            var newPertanyaan = Pertanyaan((i+1).toLong(),"try $i")
+            arrPertanyaan.add(newPertanyaan)
+        }
+        pertanyaanAdapter= PertanyaanAdapter(view.context,arrPertanyaan)
+        lvPertanyaan.adapter=pertanyaanAdapter
+        pertanyaanAdapter.notifyDataSetChanged()
         searchingBtn.setOnClickListener {
-
+            search(etSearch.text.toString())
+            pertanyaanAdapter.notifyDataSetChanged()
         }
 
         tvGoCreateLaporan.setOnClickListener {
             var laporIntent=Intent(view.context,LaporActivity::class.java)
             startActivity(laporIntent)
+        }
+    }
+
+    fun search(insert:String){
+        for(i in 0 until arrPertanyaan.size){
+            if(arrPertanyaan[i].pertanyaan.contains(insert)){
+
+            }
         }
     }
 
@@ -76,13 +95,13 @@ class LaporFragment : Fragment() {
             "$WS_HOST/laporan",
             Response.Listener {
                 val obj: JSONArray = JSONArray(it)
-                arrPertanyaan.clear()
+                arrPertanyaanDB.clear()
                 for (i in 0 until obj.length()){
                     val o=obj.getJSONObject(i)
                     val id=o.getString("id").toLong()
                     val pertanyaan=o.getString("pertanyaan")
                     val m=Pertanyaan(id,pertanyaan)
-                    arrPertanyaan.add(m)
+                    arrPertanyaanDB.add(m)
                 }
                 pertanyaanAdapter.notifyDataSetChanged()
             },

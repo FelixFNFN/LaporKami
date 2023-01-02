@@ -28,8 +28,9 @@
         android:id="@+id/textView9"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ceritakan detail kejadian :"
-        android:textColor="#000000" />
+        android:text="Ceritakan detail laporan :"
+        android:textColor="#000000"
+        android:textSize="20sp" />
 
     <EditText
         android:id="@+id/editTextTextMultiLine"
@@ -44,5 +45,6 @@
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="#737373"
         android:text="Lapor" />
 </LinearLayout>
