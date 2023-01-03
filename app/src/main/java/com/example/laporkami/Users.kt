@@ -12,7 +12,7 @@ data class Users(
     var id:Long,
     var email:String,
     var nama:String,
-    var password:String,
+//    var password:String,
     var noTelp:String) :Parcelable{
 
     override fun toString(): String {
