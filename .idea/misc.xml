@@ -3,16 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Github/LaporKami/app/src/main/res/drawable/ic_baseline_campaign_24.xml" value="0.151" />
-        <entry key="..\:/Github/LaporKami/app/src/main/res/layout/activity_home.xml" value="0.2572463768115942" />
-        <entry key="..\:/Github/LaporKami/app/src/main/res/layout/activity_lapor.xml" value="0.176" />
-        <entry key="..\:/Github/LaporKami/app/src/main/res/layout/activity_main.xml" value="0.2" />
-        <entry key="..\:/Github/LaporKami/app/src/main/res/layout/activity_profile.xml" value="0.32116788321167883" />
-        <entry key="..\:/Github/LaporKami/app/src/main/res/layout/activity_register.xml" value="0.264" />
-        <entry key="..\:/Github/LaporKami/app/src/main/res/layout/fragment_home.xml" value="0.32116788321167883" />
-        <entry key="..\:/Github/LaporKami/app/src/main/res/layout/fragment_lapor.xml" value="0.32116788321167883" />
-        <entry key="..\:/Github/LaporKami/app/src/main/res/layout/list_aktivitas.xml" value="0.32116788321167883" />
-        <entry key="..\:/Github/LaporKami/app/src/main/res/layout/list_pertanyaan.xml" value="0.2" />
+        <entry key="..\:/Github/LaporKami/app/src/main/res/layout/activity_home.xml" value="0.2" />
+        <entry key="..\:/Github/LaporKami/app/src/main/res/layout/activity_main.xml" value="0.1009946442234124" />
+        <entry key="..\:/Github/LaporKami/app/src/main/res/layout/fragment_home.xml" value="0.1337386018237082" />
       </map>
     </option>
   </component>

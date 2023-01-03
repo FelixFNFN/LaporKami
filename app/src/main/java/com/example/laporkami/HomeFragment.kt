@@ -13,6 +13,8 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.laporkami.databinding.ActivityHomeBinding
+import com.example.laporkami.databinding.FragmentHomeBinding
 import org.json.JSONArray
 
 // TODO: Rename parameter arguments, choose names that match
@@ -60,6 +62,19 @@ class HomeFragment : Fragment() {
         refreshList()
         aktifitasAdapter= AktifitasAdapter(view.context,arrAktivitas)
         lvNotif.adapter=aktifitasAdapter
+
+        btnCari.setOnClickListener {
+            if (etNIK.text.toString().length<16 || etNIK.text.toString().length>16){
+                Toast.makeText(requireActivity(), "NIK harus 16 digit", Toast.LENGTH_SHORT).show()
+            }
+            else if (etNIK.text.toString().substring(0,4)!="3578"){
+                Toast.makeText(requireActivity(), "Aplikasi ini hanya digunakan untuk kepengurusan penduduk Surabaya", Toast.LENGTH_SHORT).show()
+            }
+            else{
+
+            }
+
+        }
     }
 
     fun refreshList(){
