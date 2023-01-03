@@ -36,7 +36,9 @@ class LaporFragment : Fragment() {
     lateinit var searchingBtn: ImageButton
     lateinit var tvGoCreateLaporan: TextView
     lateinit var pertanyaanAdapter: PertanyaanAdapter
-    lateinit var arrPertanyaan:ArrayList<Pertanyaan>
+    lateinit var lvPertanyaan: ListView
+    var arrPertanyaan:ArrayList<Pertanyaan> = ArrayList()
+    var arrPertanyaanDB:ArrayList<Pertanyaan> = ArrayList()
     val WS_HOST = "http://10.0.2.2:8000/api"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,9 +61,17 @@ class LaporFragment : Fragment() {
         etSearch=view.findViewById(R.id.etSearch)
         searchingBtn=view.findViewById(R.id.searchImgBtn)
         tvGoCreateLaporan=view.findViewById(R.id.tvGoCreateLaporan)
-
+        lvPertanyaan=view.findViewById(R.id.lvPertanyaan)
+        refreshList()
+        pertanyaanAdapter= PertanyaanAdapter(view.context,arrPertanyaan)
+        lvPertanyaan.adapter=pertanyaanAdapter
         searchingBtn.setOnClickListener {
-
+            for (i in 0 until arrPertanyaanDB.size){
+                if(arrPertanyaanDB[i].pertanyaan.contains(etSearch.text.toString())){
+                    arrPertanyaan.add(arrPertanyaanDB[i])
+                }
+            }
+            pertanyaanAdapter.notifyDataSetChanged()
         }
 
         tvGoCreateLaporan.setOnClickListener {
@@ -73,16 +83,16 @@ class LaporFragment : Fragment() {
     fun refreshList(){
         val strReq=object : StringRequest(
             Method.GET,
-            "$WS_HOST/laporan",
+            "$WS_HOST/pertanyaan",
             Response.Listener {
                 val obj: JSONArray = JSONArray(it)
-                arrPertanyaan.clear()
+                arrPertanyaanDB.clear()
                 for (i in 0 until obj.length()){
                     val o=obj.getJSONObject(i)
                     val id=o.getString("id").toLong()
                     val pertanyaan=o.getString("pertanyaan")
                     val m=Pertanyaan(id,pertanyaan)
-                    arrPertanyaan.add(m)
+                    arrPertanyaanDB.add(m)
                 }
                 pertanyaanAdapter.notifyDataSetChanged()
             },
@@ -92,5 +102,12 @@ class LaporFragment : Fragment() {
         ){}
         val queue: RequestQueue = Volley.newRequestQueue(context)
         queue.add(strReq)
+
+        for (i in 0 until arrPertanyaanDB.size){
+            if(arrPertanyaanDB[i].pertanyaan.contains(etSearch.text.toString())){
+                arrPertanyaan.add(arrPertanyaanDB[i])
+            }
+        }
     }
+
 }
