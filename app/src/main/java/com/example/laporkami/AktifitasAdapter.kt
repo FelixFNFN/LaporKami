@@ -29,7 +29,7 @@ class AktifitasAdapter (context: Context,
 
         val now = listAktifitas[position]
         holder.tvAktifitas.setText(now.aktivitas)
-
+        holder.tvNama.setText(now.nama)
         return v
     }
 }
