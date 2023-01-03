@@ -16,7 +16,7 @@ class RegisterActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityRegisterBinding
 
-    val WS_HOST = "http://127.0.0.1:8000/api"
+    val WS_HOST = "http://10.0.2.2:8000/api"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +38,7 @@ class RegisterActivity : AppCompatActivity() {
                 "$WS_HOST/user/insert",
                 Response.Listener {
                     Toast.makeText(this, "input data", Toast.LENGTH_SHORT).show()
+                    finish()
                 },
                 Response.ErrorListener {
                     Toast.makeText(this,"error Insert",Toast.LENGTH_SHORT).show()
