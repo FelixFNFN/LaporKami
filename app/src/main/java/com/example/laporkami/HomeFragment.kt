@@ -80,7 +80,7 @@ class HomeFragment : Fragment() {
     fun refreshList(){
         val strReq=object : StringRequest(
             Method.GET,
-            "$WS_HOST/aktivitas",
+            "$WS_HOST/aktifitas",
             Response.Listener {
                 val obj: JSONArray = JSONArray(it)
                 arrAktivitas.clear()

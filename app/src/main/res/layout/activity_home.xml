@@ -10,13 +10,13 @@
     <FrameLayout
         android:id="@+id/fragmentHome"
         android:layout_width="match_parent"
-        android:layout_height="681dp"
+        android:layout_height="750dp"
         android:background="#03A9F4" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="50dp"
         app:itemIconTint="@color/black"
         app:itemTextColor="#000000"
         app:menu="@menu/opt_menu" />
