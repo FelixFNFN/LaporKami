@@ -90,7 +90,7 @@ class LaporFragment : Fragment() {
                 for (i in 0 until obj.length()){
                     val o=obj.getJSONObject(i)
                     val id=o.getString("id").toLong()
-                    val pertanyaan=o.getString("pertanyaan")
+                    val pertanyaan= o.getString("pertanyaan")
                     val m=Pertanyaan(id,pertanyaan)
                     arrPertanyaanDB.add(m)
                 }

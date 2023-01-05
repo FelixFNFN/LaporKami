@@ -33,7 +33,6 @@ class HomeActivity : AppCompatActivity() {
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         loginNow= intent.getParcelableExtra<Users>("loginNow")!!
-        Toast.makeText(this,loginNow.nama,Toast.LENGTH_SHORT).show()
         homePage()
         var height = displayMetrics.heightPixels
 
@@ -69,6 +68,9 @@ class HomeActivity : AppCompatActivity() {
     fun homePage() {
         val fragment = HomeFragment()
         var bundle = Bundle()
+        fragment.onItemClick={
+            Toast.makeText(this,"Masuk lho",Toast.LENGTH_SHORT).show()
+        }
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentHome,fragment)
             .setReorderingAllowed(true).commit()
@@ -95,21 +97,5 @@ class HomeActivity : AppCompatActivity() {
             .replace(R.id.fragmentHome,fragment)
             .setReorderingAllowed(true).commit()
     }
-    fun getIDUser(){
-        val strReq=object : StringRequest(
-            Method.GET,
-            "$WS_HOST/user/getid",
-            Response.Listener {
-                val obj: JSONObject = JSONObject(it)
-                val id=obj.getString("id").toLong()
-                Toast.makeText(this,id.toString(),Toast.LENGTH_SHORT).show()
-            },
-            Response.ErrorListener {
-                Toast.makeText(this,"errorGaNemuAkun", Toast.LENGTH_SHORT).show()
-            }
-        ){}
-        val queue: RequestQueue = Volley.newRequestQueue(this)
-        queue.add(strReq)
 
-    }
 }

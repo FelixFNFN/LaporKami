@@ -53,6 +53,8 @@ class HomeFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
+    var onItemClick:((selectedAktifitas:Aktifitas)->Unit)?=null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btnCari=view.findViewById(R.id.btnCari)
@@ -60,6 +62,9 @@ class HomeFragment : Fragment() {
         lvNotif=view.findViewById(R.id.listNotif)
         arrAktivitas=ArrayList()
         aktifitasAdapter= AktifitasAdapter(view.context,arrAktivitas)
+        aktifitasAdapter.onItemClick={
+            onItemClick?.invoke(it)
+        }
         lvNotif.adapter=aktifitasAdapter
 
         btnCari.setOnClickListener {
@@ -88,7 +93,7 @@ class HomeFragment : Fragment() {
                     val id=o.getString("id").toLong()
                     val nik=o.getString("nik")
                     val nama=o.getString("nama")
-                    val aktivitas=o.getString("aktivitas")
+                    val aktivitas=o.getString("aktivitas").capitalize()
                     val status=o.getString("statusCode").toInt()
                     val m=Aktifitas(id,nik,nama,aktivitas,status)
                     arrAktivitas.add(m)
@@ -98,25 +103,6 @@ class HomeFragment : Fragment() {
             Response.ErrorListener {
                 Toast.makeText(context,"error", Toast.LENGTH_SHORT).show()
             }
-//            "$WS_HOST/user",
-//            Response.Listener {
-//                val obj: JSONArray = JSONArray(it)
-//                arrAktivitas.clear()
-//                for (i in 0 until obj.length()){
-//                    val o=obj.getJSONObject(i)
-//                    val id=o.getString("id").toLong()
-//                    val nama=o.getString("nama")
-//                    val email=o.getString("email")
-//                    val noTelp=o.getString("noTelp")
-////                    val password=o.getString("password")
-//                    val m=Users(id,email,nama,noTelp)
-//                    arrAktivitas.add(m)
-//                }
-//                aktifitasAdapter.notifyDataSetChanged()
-//            },
-//            Response.ErrorListener {
-//                Toast.makeText(context,"error", Toast.LENGTH_SHORT).show()
-//            }
         ){}
         val queue: RequestQueue = Volley.newRequestQueue(context)
         queue.add(strReq)

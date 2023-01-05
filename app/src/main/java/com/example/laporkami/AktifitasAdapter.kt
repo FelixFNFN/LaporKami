@@ -46,6 +46,8 @@ class AktifitasAdapter (context: Context,
         holder.tvStatus.setText(status)
         return v
     }
+
+    var onItemClick:((aktifitasSelected:Aktifitas)->Unit)?=null
 }
 
 data class aktifitasHolder(
