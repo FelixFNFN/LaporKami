@@ -59,7 +59,6 @@ class HomeFragment : Fragment() {
         etNIK=view.findViewById(R.id.etNIK)
         lvNotif=view.findViewById(R.id.listNotif)
         arrAktivitas=ArrayList()
-        refreshList()
         aktifitasAdapter= AktifitasAdapter(view.context,arrAktivitas)
         lvNotif.adapter=aktifitasAdapter
 
@@ -71,16 +70,16 @@ class HomeFragment : Fragment() {
                 Toast.makeText(requireActivity(), "Aplikasi ini hanya digunakan untuk kepengurusan penduduk Surabaya", Toast.LENGTH_SHORT).show()
             }
             else{
-
+                refreshList(etNIK.text.toString())
             }
 
         }
     }
 
-    fun refreshList(){
+    fun refreshList(searchNIK:String){
         val strReq=object : StringRequest(
             Method.GET,
-            "$WS_HOST/aktifitas",
+            "$WS_HOST/aktifitas/$searchNIK",
             Response.Listener {
                 val obj: JSONArray = JSONArray(it)
                 arrAktivitas.clear()
