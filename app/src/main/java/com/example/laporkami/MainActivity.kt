@@ -16,6 +16,7 @@ import com.android.volley.toolbox.Volley
 import com.example.laporkami.databinding.ActivityMainBinding
 import com.example.laporkami.databinding.ActivityRegisterBinding
 import org.json.JSONArray
+import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
     lateinit var etEmail:EditText
@@ -23,6 +24,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var btnLogin:Button
     lateinit var btnRegister:Button
     lateinit var arrUser:ArrayList<Users>
+
 
     lateinit var binding: ActivityMainBinding
 
@@ -59,11 +61,11 @@ class MainActivity : AppCompatActivity() {
                     Method.POST,
                     "$WS_HOST/user/login",
                     Response.Listener {
-                        val obj:JSONArray = JSONArray(it)
+                        val obj:JSONObject = JSONObject(it) // disini diubah menggunakan objek karena menggunakan auth
                         if (obj.length()!=0) {
-                            val o = obj.getJSONObject(0)
-                            val email = o.getString("email")
-                            val password = o.getString("password")
+//                            val o = obj.getJSONObject(0)
+                            val email = obj.getString("email")
+                            val password = obj.getString("password")
                             if (binding.etEmail.text.toString()==email && binding.etPassword.text.toString() == password){
                                 MainLauncher.launch(intentHome)
                                 binding.etEmail.setText("")
