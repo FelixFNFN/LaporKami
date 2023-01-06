@@ -9,15 +9,15 @@ import android.widget.TextView
 
 class PertanyaanAdapter(
     context: Context,
-    private val listPertanyaan:List<Pertanyaan>
-) :ArrayAdapter<Pertanyaan>(context,R.layout.list_pertanyaan,listPertanyaan) {
+    private val listLaporan:List<Laporan>
+) :ArrayAdapter<Laporan>(context,R.layout.list_laporan,listLaporan) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var v:View? = convertView
         lateinit var holder: pertanyaanHolder
         if(v == null){
             val vi = (context as Activity).layoutInflater
-            v = vi.inflate(R.layout.list_pertanyaan, parent, false) as View
+            v = vi.inflate(R.layout.list_laporan, parent, false) as View
             holder = pertanyaanHolder(
                 v.findViewById(R.id.tvList)
             )
@@ -27,8 +27,8 @@ class PertanyaanAdapter(
             holder = v.getTag() as pertanyaanHolder
         }
 
-        val now = listPertanyaan[position]
-        holder.tvPertanyaan.setText(now.pertanyaan)
+        val now = listLaporan[position]
+        holder.tvPertanyaan.setText(now.subjek)
 
         return v
     }

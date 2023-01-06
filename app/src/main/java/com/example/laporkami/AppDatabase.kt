@@ -17,7 +17,7 @@ abstract class AppDatabase : RoomDatabase(){
 
         fun build(context: Context?): AppDatabase {
             if(_database == null){
-                _database = Room.databaseBuilder(context!!,AppDatabase::class.java,"LaporKami1.1_database").build()
+                _database = Room.databaseBuilder(context!!,AppDatabase::class.java,"LaporKami1.2_database").build()
             }
             return _database!!
         }

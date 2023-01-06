@@ -69,8 +69,8 @@ class HomeActivity : AppCompatActivity() {
     fun homePage() {
         val fragment = HomeFragment()
         var bundle = Bundle()
-
-        //fungsi click list
+        bundle.putParcelable("loginNow", loginNow)
+        fragment.arguments = bundle
         fragment.onItemClick={
             var detailIntent=Intent(this,DetailAktifitas::class.java)
             detailIntent.putExtra("selectedAktifitas",it)
@@ -84,6 +84,8 @@ class HomeActivity : AppCompatActivity() {
     fun laporPage(){
         val fragment = LaporFragment()
         var bundle = Bundle()
+        bundle.putParcelable("loginNow", loginNow)
+        fragment.arguments = bundle
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentHome,fragment)
             .setReorderingAllowed(true).commit()

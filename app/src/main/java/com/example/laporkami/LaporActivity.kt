@@ -17,14 +17,13 @@ class LaporActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityLaporBinding
 
+    lateinit var loginNow: Users
     val WS_HOST = "http://10.0.2.2:8000/api"
-    private var IDUser = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lapor)
 
-        getIDUser()
-        Toast.makeText(this, "$IDUser", Toast.LENGTH_SHORT).show()
+        loginNow= intent.getParcelableExtra<Users>("loginNow")!!
 
         binding = ActivityLaporBinding.inflate(layoutInflater)
         val view = binding.root
@@ -55,6 +54,7 @@ class LaporActivity : AppCompatActivity() {
                         val params = HashMap<String,String>()
                         params["subjek"] = binding.etSubjek.text.toString()
                         params["detail"] = binding.etDetailLaporan.text.toString()
+                        params["id_user"] = loginNow.id.toString()
                         return params
                     }
                 }
@@ -76,20 +76,4 @@ class LaporActivity : AppCompatActivity() {
         return true
     }
 
-    fun getIDUser(){
-        val strReq=object : StringRequest(
-            Method.GET,
-            "$WS_HOST/user/getid",
-            Response.Listener {
-                val obj: JSONObject = JSONObject(it)
-                val test = obj.getInt("iduser")
-                Toast.makeText(this, "$test", Toast.LENGTH_SHORT).show()
-            },
-            Response.ErrorListener {
-                Toast.makeText(this,"error GetID",Toast.LENGTH_SHORT).show()
-            }
-        ){}
-        val queue: RequestQueue = Volley.newRequestQueue(this)
-        queue.add(strReq)
-    }
 }
