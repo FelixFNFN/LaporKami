@@ -59,6 +59,7 @@ class HomeActivity : AppCompatActivity() {
         }
         else{
             var profileIntent=Intent(this,ProfileActivity::class.java)
+            profileIntent.putExtra("loginNow",loginNow)
             startActivity(profileIntent)
             homePage()
         }
@@ -68,26 +69,16 @@ class HomeActivity : AppCompatActivity() {
     fun homePage() {
         val fragment = HomeFragment()
         var bundle = Bundle()
+
+        //fungsi click list
         fragment.onItemClick={
-            Toast.makeText(this,"Masuk lho",Toast.LENGTH_SHORT).show()
+            var detailIntent=Intent(this,DetailAktifitas::class.java)
+            detailIntent.putExtra("selectedAktifitas",it)
+            startActivity(detailIntent)
         }
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentHome,fragment)
             .setReorderingAllowed(true).commit()
-//        coroutine.launch {
-//            refresh()
-//        }
-//        bundle.putParcelable("user", userLogin)
-//        bundle.putParcelableArrayList("arrServer", userServer)
-//        bundle.putParcelableArrayList("dServer", dserverArr)
-//        fragment.arguments = bundle
-//        fragment.onDelete = {
-//            coroutine.launch {
-//                db.dServerDao.deleteServer(it.id_server)
-//                db.serverDao.delete(it)
-//                homePage()
-//            }
-//        }
     }
 
     fun laporPage(){

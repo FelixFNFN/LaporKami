@@ -44,6 +44,11 @@ class AktifitasAdapter (context: Context,
         }
 
         holder.tvStatus.setText(status)
+
+        v.setOnClickListener {
+            onItemClick?.invoke(now)
+        }
+
         return v
     }
 

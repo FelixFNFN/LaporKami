@@ -5,12 +5,21 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import com.example.laporkami.databinding.ActivityDetailAktifitasBinding
+import com.example.laporkami.databinding.ActivityProfileBinding
 
 class ProfileActivity : AppCompatActivity() {
-
+    lateinit var binding: ActivityProfileBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile)
+        binding = ActivityProfileBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+        var loginNow=intent.getParcelableExtra<Users>("loginNow")
+
+        binding.tvNama.setText(loginNow?.nama)
+        binding.tvEmail.setText(loginNow?.email)
+        binding.tvNoTelp.setText(loginNow?.noTelp)
 
     }
 
