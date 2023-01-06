@@ -68,6 +68,8 @@ class HomeActivity : AppCompatActivity() {
     fun homePage() {
         val fragment = HomeFragment()
         var bundle = Bundle()
+        bundle.putParcelable("loginNow", loginNow)
+        fragment.arguments = bundle
         fragment.onItemClick={
             Toast.makeText(this,"Masuk lho",Toast.LENGTH_SHORT).show()
         }
@@ -93,6 +95,8 @@ class HomeActivity : AppCompatActivity() {
     fun laporPage(){
         val fragment = LaporFragment()
         var bundle = Bundle()
+        bundle.putParcelable("loginNow", loginNow)
+        fragment.arguments = bundle
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentHome,fragment)
             .setReorderingAllowed(true).commit()

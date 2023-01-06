@@ -88,15 +88,17 @@ class HomeFragment : Fragment() {
             Response.Listener {
                 val obj: JSONArray = JSONArray(it)
                 arrAktivitas.clear()
-                for (i in 0 until obj.length()){
-                    val o=obj.getJSONObject(i)
-                    val id=o.getString("id").toLong()
-                    val nik=o.getString("nik")
-                    val nama=o.getString("nama")
-                    val aktivitas=o.getString("aktivitas").capitalize()
-                    val status=o.getString("statusCode").toInt()
-                    val m=Aktifitas(id,nik,nama,aktivitas,status)
-                    arrAktivitas.add(m)
+                if(obj.length()!=0) {
+                    for (i in 0 until obj.length()) {
+                        val o = obj.getJSONObject(i)
+                        val id = o.getString("id").toLong()
+                        val nik = o.getString("nik")
+                        val nama = o.getString("nama")
+                        val aktivitas = o.getString("aktivitas").capitalize()
+                        val status = o.getString("statusCode").toInt()
+                        val m = Aktifitas(id, nik, nama, aktivitas, status)
+                        arrAktivitas.add(m)
+                    }
                 }
                 aktifitasAdapter.notifyDataSetChanged()
             },

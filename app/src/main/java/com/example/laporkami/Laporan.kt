@@ -7,6 +7,8 @@ import androidx.room.PrimaryKey
 data class Laporan(
     @PrimaryKey(autoGenerate = true)
     var id:Long,
-    var laporan:String
+    var subjek:String,
+    var detail:String,
+    var id_user:Long
 ) {
 }

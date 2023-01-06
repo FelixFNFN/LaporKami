@@ -13,9 +13,9 @@
         android:background="#00FFFFFF">
 
         <ListView
-            android:id="@+id/lvPertanyaan"
-            android:layout_width="372dp"
-            android:layout_height="498dp"
+            android:id="@+id/lvLaporan"
+            android:layout_width="377dp"
+            android:layout_height="566dp"
             android:layout_marginTop="20dp"
             android:background="#D8D8D8"
             app:layout_constraintEnd_toEndOf="parent"
@@ -29,7 +29,7 @@
             android:layout_height="43dp"
             android:layout_marginStart="20dp"
             android:ems="10"
-            android:hint="Cari Kategori"
+            android:hint="Cari Laporan"
             android:inputType="textPersonName"
             android:textColor="#000000"
             android:textSize="20sp"
@@ -51,8 +51,8 @@
             android:id="@+id/textView7"
             android:layout_width="291dp"
             android:layout_height="29dp"
-            android:layout_marginTop="544dp"
-            android:text="Tidak menemukan kategori?"
+            android:layout_marginTop="600dp"
+            android:text="Tidak menemukan laporan terkait?"
             android:textColor="#000000"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"

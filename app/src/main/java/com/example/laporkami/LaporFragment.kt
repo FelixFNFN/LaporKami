@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ListView
@@ -17,6 +16,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONArray
+import org.json.JSONObject
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -35,10 +35,13 @@ class LaporFragment : Fragment() {
     lateinit var etSearch: EditText
     lateinit var searchingBtn: ImageButton
     lateinit var tvGoCreateLaporan: TextView
-    lateinit var pertanyaanAdapter: PertanyaanAdapter
-    lateinit var lvPertanyaan: ListView
-    var arrPertanyaan:ArrayList<Pertanyaan> = ArrayList()
-    var arrPertanyaanDB:ArrayList<Pertanyaan> = ArrayList()
+    lateinit var laporanAdapter: LaporanAdapter
+    lateinit var lvLaporan: ListView
+    var arrLaporan:ArrayList<Laporan> = ArrayList()
+    var arrLike:ArrayList<Likes> = ArrayList()
+    var arrComment:ArrayList<Comment> = ArrayList()
+//    var arrPertanyaanDB:ArrayList<Laporan> = ArrayList()
+    lateinit var loginNow:Users
     val WS_HOST = "http://10.0.2.2:8000/api"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,21 +64,26 @@ class LaporFragment : Fragment() {
         etSearch=view.findViewById(R.id.etSearch)
         searchingBtn=view.findViewById(R.id.searchImgBtn)
         tvGoCreateLaporan=view.findViewById(R.id.tvGoCreateLaporan)
-        lvPertanyaan=view.findViewById(R.id.lvPertanyaan)
+        lvLaporan=view.findViewById(R.id.lvLaporan)
+        loginNow = arguments?.getParcelable<Users>("loginNow")!!
         refreshList()
-        pertanyaanAdapter= PertanyaanAdapter(view.context,arrPertanyaan)
-        lvPertanyaan.adapter=pertanyaanAdapter
+        laporanAdapter= LaporanAdapter(view.context,arrLaporan,loginNow)
+        lvLaporan.adapter=laporanAdapter
         searchingBtn.setOnClickListener {
-            for (i in 0 until arrPertanyaanDB.size){
-                if(arrPertanyaanDB[i].pertanyaan.contains(etSearch.text.toString())){
-                    arrPertanyaan.add(arrPertanyaanDB[i])
-                }
+
+            laporanAdapter.notifyDataSetChanged()
+        }
+
+        laporanAdapter.onLikeClick = object:LikeOnClickListener{
+            override fun onClick(pos:Int) {
+                Like(pos.toString())
             }
-            pertanyaanAdapter.notifyDataSetChanged()
         }
 
         tvGoCreateLaporan.setOnClickListener {
-            var laporIntent=Intent(view.context,LaporActivity::class.java)
+            var laporIntent=Intent(view.context,LaporActivity::class.java).apply {
+                putExtra("loginNow",loginNow)
+            }
             startActivity(laporIntent)
         }
     }
@@ -83,18 +91,26 @@ class LaporFragment : Fragment() {
     fun refreshList(){
         val strReq=object : StringRequest(
             Method.GET,
-            "$WS_HOST/pertanyaan",
+            "$WS_HOST/laporan",
             Response.Listener {
-                val obj: JSONArray = JSONArray(it)
-                arrPertanyaanDB.clear()
-                for (i in 0 until obj.length()){
-                    val o=obj.getJSONObject(i)
+                val alldata: JSONObject = JSONObject(it)
+
+                val objlaporan: JSONArray = alldata.getJSONArray("laporan")
+                val objlikes: JSONArray = alldata.getJSONArray("likes")
+                val objcomment: JSONArray = alldata.getJSONArray("comment")
+//                arrPertanyaanDB.clear()
+                arrLaporan.clear()
+                for (i in 0 until objlaporan.length()){
+                    val o=objlaporan.getJSONObject(i)
                     val id=o.getString("id").toLong()
-                    val pertanyaan= o.getString("pertanyaan")
-                    val m=Pertanyaan(id,pertanyaan)
-                    arrPertanyaanDB.add(m)
+                    val laporan= o.getString("laporan")
+                    val detail= o.getString("detail")
+                    val id_user= o.getString("id_user").toLong()
+                    val m=Laporan(id,laporan,detail,id_user)
+//                    arrPertanyaanDB.add(m)
+                    arrLaporan.add(m);
                 }
-                pertanyaanAdapter.notifyDataSetChanged()
+                laporanAdapter.notifyDataSetChanged()
             },
             Response.ErrorListener {
                 Toast.makeText(context,"error", Toast.LENGTH_SHORT).show()
@@ -103,11 +119,34 @@ class LaporFragment : Fragment() {
         val queue: RequestQueue = Volley.newRequestQueue(context)
         queue.add(strReq)
 
-        for (i in 0 until arrPertanyaanDB.size){
-            if(arrPertanyaanDB[i].pertanyaan.contains(etSearch.text.toString())){
-                arrPertanyaan.add(arrPertanyaanDB[i])
+//        for (i in 0 until arrPertanyaanDB.size){
+//            if(arrPertanyaanDB[i].pertanyaan.contains(etSearch.text.toString())){
+//                arrPertanyaan.add(arrPertanyaanDB[i])
+//            }
+//        }
+    }
+
+    // function ini akan digunakan saat tombol like ditekan
+    fun Like(idlaporan:String){
+        val strReq=object : StringRequest(
+            Method.POST,
+            "$WS_HOST/laporan/like",
+            Response.Listener {
+                Toast.makeText(context,"berhasil like", Toast.LENGTH_SHORT).show()
+            },
+            Response.ErrorListener {
+                Toast.makeText(context,"error", Toast.LENGTH_SHORT).show()
+            }
+        ){
+            override fun getParams(): MutableMap<String, String>? {
+                val params = HashMap<String,String>()
+                params["id_laporan"] = idlaporan
+                params["id_user"] = loginNow.id.toString()
+                return params
             }
         }
+        val queue: RequestQueue = Volley.newRequestQueue(context)
+        queue.add(strReq)
     }
 
 }
