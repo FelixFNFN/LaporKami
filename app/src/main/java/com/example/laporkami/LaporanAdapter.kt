@@ -7,12 +7,16 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.core.app.ActivityCompat
 
 class LaporanAdapter(
     context: Context,
-    private val listLaporan:List<Laporan>,
+    private val listLaporan:ArrayList<Laporan>,
+    private val listLikes:ArrayList<Likes>,
+    private val listComment:ArrayList<Comment>,
     private val loginNow:Users
 ) :ArrayAdapter<Laporan>(context,R.layout.list_laporan,listLaporan) {
+
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var v: View? = convertView
@@ -34,9 +38,46 @@ class LaporanAdapter(
         }
 
         val now = listLaporan[position]
+
+        var ctrLike = 0
+        var ctrComment = 0
+        var isLike = false
+        for (i in 0 until listLikes.size){
+            if(listLikes[i].id_laporan==now.id){
+                ctrLike++
+                if(listLikes[i].id_user==loginNow.id){
+                    isLike=true
+                }
+            }
+        }
+        for (i in 0 until listComment.size){
+            if(listComment[i].id_laporan==now.id){
+                ctrComment++
+            }
+        }
+
+        holder.tvJumLike.setText(ctrLike.toString())
+        holder.tvJumCom.setText(ctrComment.toString())
+        filterThisLaporan(now.id)
+
+        if(isLike==true){
+            holder.btnLike.setImageDrawable(ActivityCompat.getDrawable(context,R.drawable.ic__like))// ini belum jalan sempurna
+        }
         holder.tvList.setText(now.subjek)
         holder.btnLike.setOnClickListener {
             onLikeClick?.onClick(now.id.toInt())
+            if (isLike==true){
+                holder.btnLike.setImageDrawable(ActivityCompat.getDrawable(context,R.drawable.ic__dislike))
+                ctrLike--
+                holder.tvJumLike.setText(ctrLike.toString())
+                isLike=false
+            }
+            else{
+                holder.btnLike.setImageDrawable(ActivityCompat.getDrawable(context,R.drawable.ic__like))
+                ctrLike++
+                holder.tvJumLike.setText(ctrLike.toString())
+                isLike=true
+            }
         }
         holder.btnCom.setOnClickListener {
             onCommnetClick?.onClick(now.id.toInt())
@@ -50,6 +91,11 @@ class LaporanAdapter(
     // di bawah ini digunakan saat tombol like atau tombol comment ditekan
     var onLikeClick : LikeOnClickListener? = null
     var onCommnetClick : CommentOnClickListener? = null
+
+    fun filterThisLaporan(idlaporan:Long){
+
+    }
+
 }
 
 data class laporanHolder(

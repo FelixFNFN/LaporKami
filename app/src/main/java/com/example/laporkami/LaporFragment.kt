@@ -40,7 +40,7 @@ class LaporFragment : Fragment() {
     var arrLaporan:ArrayList<Laporan> = ArrayList()
     var arrLike:ArrayList<Likes> = ArrayList()
     var arrComment:ArrayList<Comment> = ArrayList()
-//    var arrPertanyaanDB:ArrayList<Laporan> = ArrayList()
+    //    var arrPertanyaanDB:ArrayList<Laporan> = ArrayList()
     lateinit var loginNow:Users
     val WS_HOST = "http://10.0.2.2:8000/api"
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,7 +67,7 @@ class LaporFragment : Fragment() {
         lvLaporan=view.findViewById(R.id.lvLaporan)
         loginNow = arguments?.getParcelable<Users>("loginNow")!!
         refreshList()
-        laporanAdapter= LaporanAdapter(view.context,arrLaporan,loginNow)
+        laporanAdapter= LaporanAdapter(view.context,arrLaporan,arrLike,arrComment,loginNow)
         lvLaporan.adapter=laporanAdapter
         searchingBtn.setOnClickListener {
 
@@ -79,6 +79,17 @@ class LaporFragment : Fragment() {
                 Like(pos.toString())
             }
         }
+
+//        laporanAdapter.onCommnetClick = object:CommentOnClickListener{
+//            override fun onClick(pos:Int) {
+//                var detaillaporIntent=Intent(view.context,LaporActivity::class.java).apply {
+//                    putExtra("loginNow",loginNow)
+//                    putExtra("arrlike",arrLike)
+//                    putExtra("arrcomment",arrComment)
+//                }
+//                startActivity(detaillaporIntent)
+//            }
+//        }
 
         tvGoCreateLaporan.setOnClickListener {
             var laporIntent=Intent(view.context,LaporActivity::class.java).apply {
@@ -109,6 +120,25 @@ class LaporFragment : Fragment() {
                     val m=Laporan(id,laporan,detail,id_user)
 //                    arrPertanyaanDB.add(m)
                     arrLaporan.add(m);
+                }
+                arrLike.clear()
+                for (i in 0 until objlikes.length()){
+                    val o=objlikes.getJSONObject(i)
+                    val id = o.getString("id").toLong()
+                    val id_laporan = o.getString("id_laporan").toLong()
+                    val id_user = o.getString("id_user").toLong()
+                    val m = Likes(id,id_laporan,id_user)
+                    arrLike.add(m)
+                }
+                arrComment.clear()
+                for (i in 0 until objcomment.length()){
+                    val o=objcomment.getJSONObject(i)
+                    val id = o.getString("id").toLong()
+                    val id_laporan = o.getString("id_laporan").toLong()
+                    val id_user = o.getString("id_user").toLong()
+                    val comment = o.getString("comment")
+                    val m = Comment(id,id_laporan,id_user,comment)
+                    arrComment.add(m)
                 }
                 laporanAdapter.notifyDataSetChanged()
             },
