@@ -58,7 +58,6 @@ class LaporanAdapter(
 
         holder.tvJumLike.setText(ctrLike.toString())
         holder.tvJumCom.setText(ctrComment.toString())
-        filterThisLaporan(now.id)
 
         if(isLike==true){
             holder.btnLike.setImageDrawable(ActivityCompat.getDrawable(context,R.drawable.ic__like))// ini belum jalan sempurna
@@ -80,7 +79,10 @@ class LaporanAdapter(
             }
         }
         holder.btnCom.setOnClickListener {
-            onCommnetClick?.onClick(now.id.toInt())
+            onCommnetClick?.onClick(position)
+        }
+        holder.tvList.setOnClickListener {
+            onCommnetClick?.onClick(position)
         }
 
 
@@ -92,9 +94,6 @@ class LaporanAdapter(
     var onLikeClick : LikeOnClickListener? = null
     var onCommnetClick : CommentOnClickListener? = null
 
-    fun filterThisLaporan(idlaporan:Long){
-
-    }
 
 }
 

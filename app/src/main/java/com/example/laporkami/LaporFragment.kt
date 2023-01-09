@@ -80,22 +80,29 @@ class LaporFragment : Fragment() {
             }
         }
 
-//        laporanAdapter.onCommnetClick = object:CommentOnClickListener{
-//            override fun onClick(pos:Int) {
-//                var detaillaporIntent=Intent(view.context,LaporActivity::class.java).apply {
-//                    putExtra("loginNow",loginNow)
-//                    putExtra("arrlike",arrLike)
-//                    putExtra("arrcomment",arrComment)
-//                }
-//                startActivity(detaillaporIntent)
-//            }
-//        }
+        laporanAdapter.onCommnetClick = object:CommentOnClickListener{
+            override fun onClick(pos:Int) {
+                var detaillaporIntent=Intent(view.context,CommentActivity::class.java).apply {
+                    putExtra("loginNow",loginNow)
+                    putExtra("id_laporan", arrLaporan[pos].id)
+                    putExtra("subjek", arrLaporan[pos].subjek)
+                    putExtra("detail", arrLaporan[pos].detail)
+                    putParcelableArrayListExtra("arrlike",arrLike)
+                    putParcelableArrayListExtra("arrcomment",arrComment)
+                }
+                startActivity(detaillaporIntent)
+            }
+        }
 
         tvGoCreateLaporan.setOnClickListener {
             var laporIntent=Intent(view.context,LaporActivity::class.java).apply {
                 putExtra("loginNow",loginNow)
             }
             startActivity(laporIntent)
+        }
+
+        searchingBtn.setOnClickListener {
+            cariLaporan()
         }
     }
 
@@ -107,38 +114,44 @@ class LaporFragment : Fragment() {
                 val alldata: JSONObject = JSONObject(it)
 
                 val objlaporan: JSONArray = alldata.getJSONArray("laporan")
-                val objlikes: JSONArray = alldata.getJSONArray("likes")
-                val objcomment: JSONArray = alldata.getJSONArray("comment")
 //                arrPertanyaanDB.clear()
                 arrLaporan.clear()
-                for (i in 0 until objlaporan.length()){
-                    val o=objlaporan.getJSONObject(i)
-                    val id=o.getString("id").toLong()
-                    val laporan= o.getString("laporan")
-                    val detail= o.getString("detail")
-                    val id_user= o.getString("id_user").toLong()
-                    val m=Laporan(id,laporan,detail,id_user)
-//                    arrPertanyaanDB.add(m)
-                    arrLaporan.add(m);
-                }
                 arrLike.clear()
-                for (i in 0 until objlikes.length()){
-                    val o=objlikes.getJSONObject(i)
-                    val id = o.getString("id").toLong()
-                    val id_laporan = o.getString("id_laporan").toLong()
-                    val id_user = o.getString("id_user").toLong()
-                    val m = Likes(id,id_laporan,id_user)
-                    arrLike.add(m)
-                }
                 arrComment.clear()
-                for (i in 0 until objcomment.length()){
-                    val o=objcomment.getJSONObject(i)
-                    val id = o.getString("id").toLong()
-                    val id_laporan = o.getString("id_laporan").toLong()
-                    val id_user = o.getString("id_user").toLong()
-                    val comment = o.getString("comment")
-                    val m = Comment(id,id_laporan,id_user,comment)
-                    arrComment.add(m)
+                if(objlaporan.length()!=0) {
+                    for (i in 0 until objlaporan.length()) {
+                        val o = objlaporan.getJSONObject(i)
+                        val id = o.getString("id").toLong()
+                        val laporan = o.getString("laporan")
+                        val detail = o.getString("detail")
+                        val id_user = o.getString("id_user").toLong()
+                        val m = Laporan(id, laporan, detail, id_user)
+                        arrLaporan.add(m);
+                        val objlikes: JSONArray = o.getJSONArray("laporanlikes")
+                        if (objlikes.length() != 0) {
+                            for (i in 0 until objlikes.length()) {
+                                val o = objlikes.getJSONObject(i)
+                                val id = o.getString("id").toLong()
+                                val id_laporan = o.getString("id_laporan").toLong()
+                                val id_user = o.getString("id_user").toLong()
+                                val m = Likes(id, id_laporan, id_user)
+                                arrLike.add(m)
+                            }
+                        }
+
+                        val objcomment: JSONArray = o.getJSONArray("laporancomment")
+                        if (objcomment.length() != 0) {
+                            for (i in 0 until objcomment.length()) {
+                                val o = objcomment.getJSONObject(i)
+                                val id = o.getString("id").toLong()
+                                val id_laporan = o.getString("id_laporan").toLong()
+                                val id_user = o.getString("id_user").toLong()
+                                val comment = o.getString("comment")
+                                val m = Comment(id, id_laporan, id_user, comment)
+                                arrComment.add(m)
+                            }
+                        }
+                    }
                 }
                 laporanAdapter.notifyDataSetChanged()
             },
@@ -146,6 +159,76 @@ class LaporFragment : Fragment() {
                 Toast.makeText(context,"error", Toast.LENGTH_SHORT).show()
             }
         ){}
+        val queue: RequestQueue = Volley.newRequestQueue(context)
+        queue.add(strReq)
+
+//        for (i in 0 until arrPertanyaanDB.size){
+//            if(arrPertanyaanDB[i].pertanyaan.contains(etSearch.text.toString())){
+//                arrPertanyaan.add(arrPertanyaanDB[i])
+//            }
+//        }
+    }
+
+    fun cariLaporan(){
+        val strReq=object : StringRequest(
+            Method.GET,
+            "$WS_HOST/laporan/search",
+            Response.Listener {
+                val alldata: JSONObject = JSONObject(it)
+
+                val objlaporan: JSONArray = alldata.getJSONArray("laporan")
+//                arrPertanyaanDB.clear()
+                arrLaporan.clear()
+                arrLike.clear()
+                arrComment.clear()
+                if(objlaporan.length()!=0) {
+                    for (i in 0 until objlaporan.length()) {
+                        val o = objlaporan.getJSONObject(i)
+                        val id = o.getString("id").toLong()
+                        val laporan = o.getString("laporan")
+                        val detail = o.getString("detail")
+                        val id_user = o.getString("id_user").toLong()
+                        val m = Laporan(id, laporan, detail, id_user)
+                        arrLaporan.add(m);
+                        val objlikes: JSONArray = o.getJSONArray("laporanlikes")
+                        if (objlikes.length() != 0) {
+                            for (i in 0 until objlikes.length()) {
+                                val o = objlikes.getJSONObject(i)
+                                val id = o.getString("id").toLong()
+                                val id_laporan = o.getString("id_laporan").toLong()
+                                val id_user = o.getString("id_user").toLong()
+                                val m = Likes(id, id_laporan, id_user)
+                                arrLike.add(m)
+                            }
+                        }
+
+                        val objcomment: JSONArray = o.getJSONArray("laporancomment")
+                        if (objcomment.length() != 0) {
+                            for (i in 0 until objcomment.length()) {
+                                val o = objcomment.getJSONObject(i)
+                                val id = o.getString("id").toLong()
+                                val id_laporan = o.getString("id_laporan").toLong()
+                                val id_user = o.getString("id_user").toLong()
+                                val comment = o.getString("comment")
+                                val m = Comment(id, id_laporan, id_user, comment)
+                                arrComment.add(m)
+                            }
+                        }
+                    }
+                }
+                laporanAdapter.notifyDataSetChanged()
+                Toast.makeText(context,"berhasil search", Toast.LENGTH_SHORT).show()
+            },
+            Response.ErrorListener {
+                Toast.makeText(context,"error", Toast.LENGTH_SHORT).show()
+            }
+        ){
+            override fun getParams(): MutableMap<String, String>? {
+                val params = HashMap<String,String>()
+                params["keyword"] = etSearch.text.toString()
+                return params
+            }
+        }
         val queue: RequestQueue = Volley.newRequestQueue(context)
         queue.add(strReq)
 
