@@ -61,19 +61,23 @@ class MainActivity : AppCompatActivity() {
                     Method.POST,
                     "$WS_HOST/user/login",
                     Response.Listener {
-                        val obj:JSONObject = JSONObject(it) // disini diubah menggunakan objek karena menggunakan auth
+                        val obj:JSONObject = JSONObject(it)
                         if (obj.length()!=0) {
-                            val email = obj.getString("email")
-                            val password = obj.getString("password")
-                            if (binding.etEmail.text.toString()==email && binding.etPassword.text.toString() == password){
-                                val loginUser=Users(obj.getString("id").toLong(),obj.getString("email"),obj.getString("nama"),obj.getString("password"),obj.getString("noTelp"))
-                                intentHome.putExtra("loginNow",loginUser)
-                                MainLauncher.launch(intentHome)
-                                binding.etEmail.setText("")
-                                binding.etPassword.setText("")
-                            }
-                            else{
-                                Toast.makeText(this, "Password salah", Toast.LENGTH_SHORT).show()
+                            if(obj.getString("status")=="0"){
+                                Toast.makeText(this,"Akun diblokir, hubungi admin",Toast.LENGTH_SHORT).show()
+                            }else{
+                                val email = obj.getString("email")
+                                val password = obj.getString("password")
+                                if (binding.etEmail.text.toString()==email && binding.etPassword.text.toString() == password){
+                                    val loginUser=Users(obj.getString("id").toLong(),obj.getString("email"),obj.getString("nama"),obj.getString("password"),obj.getString("noTelp"))
+                                    intentHome.putExtra("loginNow",loginUser)
+                                    MainLauncher.launch(intentHome)
+                                    binding.etEmail.setText("")
+                                    binding.etPassword.setText("")
+                                }
+                                else{
+                                    Toast.makeText(this, "Password salah", Toast.LENGTH_SHORT).show()
+                                }
                             }
                         }
                         else{
