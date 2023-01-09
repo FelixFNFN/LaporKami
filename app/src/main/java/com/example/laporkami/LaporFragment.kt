@@ -102,7 +102,7 @@ class LaporFragment : Fragment() {
         }
 
         searchingBtn.setOnClickListener {
-            cariLaporan()
+            cariLaporan(etSearch.text.toString())
         }
     }
 
@@ -169,10 +169,10 @@ class LaporFragment : Fragment() {
 //        }
     }
 
-    fun cariLaporan(){
+    fun cariLaporan(keyword:String){
         val strReq=object : StringRequest(
             Method.GET,
-            "$WS_HOST/laporan/search",
+            "$WS_HOST/laporan/search/$keyword",
             Response.Listener {
                 val alldata: JSONObject = JSONObject(it)
 
@@ -217,7 +217,6 @@ class LaporFragment : Fragment() {
                     }
                 }
                 laporanAdapter.notifyDataSetChanged()
-                Toast.makeText(context,"berhasil search", Toast.LENGTH_SHORT).show()
             },
             Response.ErrorListener {
                 Toast.makeText(context,"error", Toast.LENGTH_SHORT).show()
