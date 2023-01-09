@@ -24,12 +24,14 @@ class HomeActivity : AppCompatActivity() {
     lateinit var arrPertanyaan: ArrayList<Pertanyaan>
     lateinit var pertanyaanAdapter: PertanyaanAdapter
     lateinit var loginNow:Users
+    private lateinit var db: AppDatabase
     val WS_HOST = "http://10.0.2.2:8000/api"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        db= AppDatabase.build(this)
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         loginNow= intent.getParcelableExtra<Users>("loginNow")!!
@@ -55,6 +57,7 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId==R.id.logout_menu){
+            logout()
             finish()
         }
         else{
@@ -91,4 +94,9 @@ class HomeActivity : AppCompatActivity() {
             .setReorderingAllowed(true).commit()
     }
 
+    fun logout(){
+        coroutine.launch {
+            db.userDao.deleteAll()
+        }
+    }
 }

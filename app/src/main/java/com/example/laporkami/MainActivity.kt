@@ -15,6 +15,9 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.laporkami.databinding.ActivityMainBinding
 import com.example.laporkami.databinding.ActivityRegisterBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -24,8 +27,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var btnLogin:Button
     lateinit var btnRegister:Button
     lateinit var arrUser:ArrayList<Users>
-
-
+    private lateinit var db: AppDatabase
+    private val coroutine = CoroutineScope(Dispatchers.IO)
     lateinit var binding: ActivityMainBinding
 
     val WS_HOST = "http://10.0.2.2:8000/api"
@@ -42,7 +45,9 @@ class MainActivity : AppCompatActivity() {
 //        etPassword=findViewById(R.id.etPassword)
 //        btnLogin=findViewById(R.id.btnLogin)
 //        btnRegister=findViewById(R.id.btnRegister)
-
+        db= AppDatabase.build(this)
+        arrUser= ArrayList()
+        cekLogin()
         var intentHome=Intent(this,HomeActivity::class.java)
         var intentRegister=Intent(this,RegisterActivity::class.java)
 
@@ -70,6 +75,9 @@ class MainActivity : AppCompatActivity() {
                                 val password = obj.getString("password")
                                 if (binding.etEmail.text.toString()==email && binding.etPassword.text.toString() == password){
                                     val loginUser=Users(obj.getString("id").toLong(),obj.getString("email"),obj.getString("nama"),obj.getString("password"),obj.getString("noTelp"))
+                                    coroutine.launch {
+                                        db.userDao.insert(loginUser)
+                                    }
                                     intentHome.putExtra("loginNow",loginUser)
                                     MainLauncher.launch(intentHome)
                                     binding.etEmail.setText("")
@@ -112,6 +120,26 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnRegister.setOnClickListener {
             registerLauncher.launch(intentRegister)
+        }
+    }
+
+    fun cekLogin(){
+        var intentHome=Intent(this,HomeActivity::class.java)
+        var MainLauncher=registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+                result:ActivityResult ->
+            if(result != null){
+
+            }
+        }
+        coroutine.launch {
+            arrUser.addAll(db.userDao.fetch().toMutableList())
+            if (arrUser.size >0) {
+                runOnUiThread {
+                    val loginUser=arrUser[0]
+                    intentHome.putExtra("loginNow",loginUser)
+                    MainLauncher.launch(intentHome)
+                }
+            }
         }
     }
 }
