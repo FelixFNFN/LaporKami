@@ -33,28 +33,37 @@ class RegisterActivity : AppCompatActivity() {
         }
         
         binding.btnRegisterPage.setOnClickListener {
-            val strReq=object : StringRequest(
-                Method.POST,
-                "$WS_HOST/user/insert",
-                Response.Listener {
-                    Toast.makeText(this, "input data", Toast.LENGTH_SHORT).show()
-                    finish()
-                },
-                Response.ErrorListener {
-                    Toast.makeText(this,"error Insert",Toast.LENGTH_SHORT).show()
+            if(binding.etEmailRegis.text.toString()!="" && binding.etNamaLengkapRegis.text.toString()!="" && binding.etNomortTelponRegis.text.toString()!=""
+                && binding.etPasswordRegis.text.toString()!="" && binding.etConfirmPass.text.toString()!=""){
+
+                val strReq=object : StringRequest(
+                    Method.POST,
+                    "$WS_HOST/user/insert",
+                    Response.Listener {
+                        Toast.makeText(this, "input data", Toast.LENGTH_SHORT).show()
+                        finish()
+                    },
+                    Response.ErrorListener {
+                        Toast.makeText(this,"error Insert",Toast.LENGTH_SHORT).show()
+                    }
+                ){
+                    override fun getParams(): MutableMap<String, String>? {
+                        val params = HashMap<String,String>()
+                        params["email"] = binding.etEmailRegis.text.toString()
+                        params["nama"] = binding.etNamaLengkapRegis.text.toString()
+                        params["noTelp"] = binding.etNomortTelponRegis.text.toString()
+                        params["password"] = binding.etPasswordRegis.text.toString()
+                        params["confirmPassword"] = binding.etConfirmPass.text.toString()
+                        return params
+                    }
                 }
-            ){
-                override fun getParams(): MutableMap<String, String>? {
-                    val params = HashMap<String,String>()
-                    params["email"] = binding.etEmailRegis.text.toString()
-                    params["nama"] = binding.etNamaLengkapRegis.text.toString()
-                    params["noTelp"] = binding.etNomortTelponRegis.text.toString()
-                    params["password"] = binding.etPasswordRegis.text.toString()
-                    return params
-                }
+                val queue:RequestQueue = Volley.newRequestQueue(this)
+                queue.add(strReq)
+
             }
-            val queue:RequestQueue = Volley.newRequestQueue(this)
-            queue.add(strReq)
+            else{
+                Toast.makeText(this,"Isi Semua Field",Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
